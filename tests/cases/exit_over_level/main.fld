@@ -1,0 +1,4 @@
+function main
+  output "before"
+  exit 9
+  output "after"

@@ -1,0 +1,4 @@
+function add a, b
+  return a + b
+function main
+  output invoke add 3, 4

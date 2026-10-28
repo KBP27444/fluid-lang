@@ -1,0 +1,4 @@
+function main
+  initialize integer a 1
+  free a
+  output a

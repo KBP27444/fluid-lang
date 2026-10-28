@@ -1,0 +1,5 @@
+function helper
+  exit 1.0
+function main
+  invoke helper
+  output "back"

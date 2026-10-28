@@ -1,0 +1,3 @@
+function main
+  alias say output
+  say "hi"

@@ -1,0 +1,4 @@
+function main
+  initialize boolean b false
+  input b
+  output b

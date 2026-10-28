@@ -1,0 +1,4 @@
+function nothing
+  return
+function main
+  output invoke nothing

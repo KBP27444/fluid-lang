@@ -1,0 +1,75 @@
+# ============================================================
+# Fluid (.fld) interpreter - GitHub ignore rules
+# Target: Windows + MinGW g++, Python 3 test driver
+# ============================================================
+
+# ---------- Build products ----------
+# NOTE: never ignore *.out, because tests/cases/*/expected.out is tracked source data.
+*.exe
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exp
+*.ilk
+*.pdb
+*.idb
+*.gch
+*.pch
+*.d
+*.map
+*.tlog
+*.su
+
+# Explicit product name (belt and braces)
+fluid
+fluid.exe
+
+# ---------- Build directories ----------
+build/
+build-*/
+out/
+bin/
+obj/
+dist/
+cmake-build-*/
+.cache/
+
+# ---------- CMake leftovers (not used now, ignored defensively) ----------
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# ---------- Test executables built ad hoc ----------
+tests/*.exe
+tests/**/*.exe
+
+# ---------- Editor / IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.user
+*.suo
+
+# ---------- OS ----------
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ---------- Local agent workspace (project memory/logs) ----------
+.workbuddy/

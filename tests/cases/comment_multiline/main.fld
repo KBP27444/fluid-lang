@@ -1,0 +1,5 @@
+\note 第一行注释
+第二行仍然在注释里 \note
+function main
+  output "a"\note 紧贴代码的注释 \note
+  output "b"

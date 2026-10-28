@@ -1,0 +1,3 @@
+function main
+  initialize integer int 5
+  output int

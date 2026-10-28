@@ -1,0 +1,6 @@
+function main
+  initialize integer a 1, integer b 2
+  if not a = b
+    output "yes"
+  otherwise
+    output "no"

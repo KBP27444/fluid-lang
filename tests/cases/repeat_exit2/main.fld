@@ -1,0 +1,8 @@
+function main
+  initialize integer i 0
+  repeat
+    reassign i i + 1
+    output i
+    if i = 3
+      exit 2
+  output "done"

@@ -1,0 +1,9 @@
+\note 演示：repeat 循环与 exit 层级；exit 2 跳出 if 与 repeat 两级后继续执行外层语句。 \note
+function main
+  initialize integer i 0
+  repeat
+    reassign i i + 1
+    if i = 5
+      exit 2
+    output i, " "
+  output "\nfinished\n"

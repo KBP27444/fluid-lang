@@ -1,0 +1,4 @@
+function empty
+function main
+  invoke empty
+  output "ok"

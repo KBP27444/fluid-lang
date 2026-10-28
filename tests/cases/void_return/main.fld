@@ -1,0 +1,6 @@
+function greet
+  output "hi"
+  return
+function main
+  invoke greet
+  output "!"

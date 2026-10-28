@@ -1,0 +1,3 @@
+function main
+  output "a"
+\note 未闭合的注释

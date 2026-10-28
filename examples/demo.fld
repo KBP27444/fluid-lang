@@ -1,0 +1,15 @@
+\note 演示：函数、算术、变量状态机、条件与字符串拼接 \note
+function add a, b
+  return a + b
+
+function main
+  initialize integer x 10
+  initialize integer y 20
+  output "sum = ", invoke add x, y, "\n"
+  free x
+  initialize automatic z 3.5
+  output "z = ", z, "\n"
+  if z > 3.0
+    output "z is large\n"
+  otherwise
+    output "z is small\n"

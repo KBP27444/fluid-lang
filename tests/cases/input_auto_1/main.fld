@@ -1,0 +1,4 @@
+function main
+  initialize automatic x 0
+  input x
+  output x

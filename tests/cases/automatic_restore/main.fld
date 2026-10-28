@@ -1,0 +1,6 @@
+function main
+  initialize integer a 5
+  automatic a
+  output a
+  reassign a 2.5
+  output a

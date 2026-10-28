@@ -1,0 +1,3 @@
+function main
+  initialize integer auto 3
+  output auto
