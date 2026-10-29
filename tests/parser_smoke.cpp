@@ -60,13 +60,13 @@ function main
 )LANG", "链式比较");
 
     expectError(R"LANG(function main
-  alias value output
+  alias output value
   initialize integer value 1
 )LANG", "冲突");
 
     expectError(R"LANG(function main
   initialize integer value 1
-  alias value output
+  alias output value
 )LANG", "冲突");
 
     expectError(R"LANG(function main
@@ -82,7 +82,7 @@ function add a, b
 )LANG", "参数个数不匹配");
 
     Program statements = parseText(R"LANG(function helper p
-  alias show output
+  alias output show
   show p
   return
 function main
@@ -114,7 +114,7 @@ function main
 
     expectError(R"LANG(function main
   if true
-    alias show output
+    alias output show
 )LANG", "函数体顶层");
 
     return 0;

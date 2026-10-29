@@ -20,7 +20,7 @@ CHAIN = """function main
 """
 
 CONFLICT = """function main
-  alias value output
+  alias output value
   initialize integer value 1
 """
 

@@ -2,7 +2,7 @@
 
 Fluid 是一门缩进敏感、显式类型、支持 `automatic` 自动类型的脚本语言，源文件扩展名为 `.fld`。本仓库是其 C++17 解释器。
 
-> 当前版本：**v0.1.1**（新增 `+` 字符串拼接）。
+> 当前版本：**v0.1.2**。
 
 ## 构建
 
@@ -86,6 +86,8 @@ REPL、格式化器、LSP、科学计数法、十六进制、`else if`、参数�
 - 空 `repeat` 或没有退出路径的 `repeat` 会无限循环；不做运行期检测，请自行保证循环可终止。
 - 函数参数以逗号分隔，例如 `function add a, b`。
 - `invoke` 的实参是逗号分隔的基本项；实参内部若需 `+ -` 等运算请用括号分组，例如 `invoke fib (n - 1)`。裸写 `invoke fib n - 1` 会被解析为 `(invoke fib n) - 1`。
+- `alias 原命令 新名`：第一个词是被替换的内建命令（如 `initialize` / `output`），第二个词是新别名，例如 `alias output say` 让 `say` 成为 `output` 的别名；`alias` 只允许出现在函数体顶层，且不允许链式（别名不能再被别名）。
+- 变量声明初值可省略：`initialize integer a` 或 `initialize automatic b` 均合法，省略初值时变量处于「无值状态」，使用前必须先 `reassign` / `input` 赋值，否则报「尚未赋值」。
 
 ## 语义决策摘要
 

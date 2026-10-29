@@ -151,12 +151,12 @@ void Parser::checkAllDeclarations() {
         for (std::size_t i = region.bodyBegin; i < region.bodyEnd; ++i) {
             if (tokens_[i].kind == TokenKind::Alias &&
                 i + 1 < region.bodyEnd &&
-                tokens_[i + 1].kind == TokenKind::Identifier) {
-                const Token& name = tokens_[i + 1];
+                isBuiltinCommand(tokens_[i + 1].kind) &&
+                i + 2 < region.bodyEnd &&
+                tokens_[i + 2].kind == TokenKind::Identifier) {
+                const Token& name = tokens_[i + 2]; // 新别名（第二个词）
                 aliases.push_back(name);
-                if (i + 2 < region.bodyEnd && isBuiltinCommand(tokens_[i + 2].kind)) {
-                    aliasTargets[name.text] = tokens_[i + 2].kind;
-                }
+                aliasTargets[name.text] = tokens_[i + 1].kind;
             }
         }
 
@@ -212,7 +212,7 @@ void Parser::checkDeclarationNames(
         add(variable, "initialize 变量");
     }
     for (const Token& alias : aliases) {
-        add(alias, "alias 新名");
+        add(alias, "alias 新名（重复/链式）");
     }
 }
 
@@ -317,7 +317,14 @@ std::unique_ptr<Stmt> Parser::parseInitialize(const Token& command) {
         const Token typeToken = peek();
         const TypeKind type = parseType();
         Token name = expectIdentifier("initialize 变量名", true);
-        auto value = parseExpression();
+
+        // 初值为可选项：遇到换行或逗号即视为无初值声明，正常结束该声明
+        std::unique_ptr<Expr> value;
+        if (check(TokenKind::Newline) || check(TokenKind::Comma)) {
+            value = nullptr;
+        } else {
+            value = parseExpression();
+        }
         statement->declarations.push_back(
             InitializeDecl{type, name.text, std::move(value), name.line, name.col});
 
@@ -375,19 +382,21 @@ std::unique_ptr<Stmt> Parser::parseAlias(
 
     advance();
     auto statement = std::make_unique<AliasStmt>(command.line, command.col);
-    Token name = expectIdentifier("alias 新名", true);
-    const Token target = peek();
 
+    // 语法：alias 原命令 新名（第一个词为待替换的内建命令，第二个词为新别名）
+    const Token target = peek();
     if (target.kind == TokenKind::Identifier) {
-        if (aliases.count(target.text) != 0) {
-            fail(target, "不允许链式别名: " + target.text);
-        }
-        fail(target, "alias 目标必须是内建命令，不能是普通标识符");
+        fail(target, "alias 第一个词必须是内建命令（如 initialize），不能是普通标识符");
     }
     if (!isBuiltinCommand(target.kind)) {
-        fail(target, "alias 目标必须是内建命令");
+        fail(target, "alias 第一个词必须是内建命令");
     }
     advance();
+
+    Token name = expectIdentifier("alias 新名", true);
+    if (aliases.count(name.text) != 0) {
+        fail(name, "别名 '" + name.text + "' 已被定义，不允许重复定义或链式别名");
+    }
     expectNewline();
 
     statement->name = name.text;

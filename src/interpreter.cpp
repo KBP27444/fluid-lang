@@ -149,6 +149,11 @@ Value Interpreter::eval(const Expr* expr) {
 void Interpreter::execute(const Stmt* stmt) {
     if (const auto* node = dynamic_cast<const InitializeStmt*>(stmt)) {
         for (const auto& decl : node->declarations) {
+            if (!decl.value) {
+                // 无初值声明：变量已声明但处于无值状态，使用前必须先赋值
+                env_.declare(decl.name, decl.type, false, Value{});
+                continue;
+            }
             Value raw = eval(decl.value.get());
             if (decl.type == TypeKind::Automatic) {
                 env_.declare(decl.name, TypeKind::Automatic, true, raw);
