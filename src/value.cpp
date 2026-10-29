@@ -95,6 +95,17 @@ Value applyBinary(TokenKind op, const Value& left, const Value& right, int line,
     case TokenKind::Minus:
     case TokenKind::Star:
     case TokenKind::Slash: {
+        // 字符串拼接：仅 '+' 且两侧均为字符串时允许
+        if (op == TokenKind::Plus && isString(left) && isString(right)) {
+            return asString(left) + asString(right);
+        }
+        // 字符串与数值混合（或 '-'/'*'/'/' 涉及字符串）一律类型不匹配
+        if (isString(left) || isString(right)) {
+            if (op == TokenKind::Plus) {
+                throw LangError("", line, col, "字符串只能与字符串拼接（'+'）");
+            }
+            throw LangError("", line, col, "字符串不能参与 '-'/'*'/'/' 运算");
+        }
         if (!isNumeric(left) || !isNumeric(right)) {
             throw LangError("", line, col, "算术运算 '+'/'-'/'*'/'/' 要求两侧均为数值");
         }

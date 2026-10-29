@@ -2,13 +2,9 @@
 
 Fluid 是一门缩进敏感、显式类型、支持 `automatic` 自动类型的脚本语言，源文件扩展名为 `.fld`。本仓库是其 C++17 解释器。
 
+> 当前版本：**v0.1.1**（新增 `+` 字符串拼接）。
+
 ## 构建
-
-环境：Windows + MinGW-w64 g++（C++17）。编译器路径固定为：
-
-```
-C:\msys64\ucrt64\bin\g++.exe
-```
 
 ```powershell
 .\build.ps1            # 构建（-std=c++17 -Wall -Wextra -pedantic）
@@ -16,7 +12,7 @@ C:\msys64\ucrt64\bin\g++.exe
 .\build.ps1 -Sanitize  # 尝试 ASan（-fsanitize=address），不可用时自动回退 -Debug
 ```
 
-产物：仓库根目录 `fluid.exe`。不使用 CMake / MSVC / WSL。
+产物：仓库根目录 `fluid.exe`。
 
 ## 运行
 
@@ -64,18 +60,7 @@ python tests\run_tests.py --exe .\fluid.exe --filter input
 - stdout 精确比较；`expected.err_contains` 的每个非空行须作为子串出现在 stderr 某一行（不要求顺序）；单例超时 10 秒。
 - 错误用例（`expected.exit` = 1）额外要求 stderr 至少一行匹配 `文件:行:列: 错误: `。
 - warning 用例要求 stderr 至少一行匹配 `文件:行:列: warning: `，且 stdout 精确匹配、退出码 0。
-- 当前共 **47** 个用例：正例 18、错误例 27、warning 例 2。
-
-> **受限环境说明**：某些沙箱 / 杀毒软件会禁止新生成的原生 exe 读取文件，此时 `fluid.exe` 返回 `Permission denied`（退出码 2），`run_tests.py` 无法取得结果。可用内存方式验证（复用同一套比对逻辑，不访问文件系统）：
->
-> ```powershell
-> C:\msys64\ucrt64\bin\g++.exe -std=c++17 -I src src\source.cpp src\error.cpp src\lexer.cpp src\parser.cpp src\value.cpp src\environment.cpp src\interpreter.cpp tests\membatch.cpp -o tests\membatch.exe
-> python tests\run_tests_memory.py
-> ```
-
-## ASan 验证状态
-
-本次探测：`g++ -fsanitize=address` **链接失败**（`collect2.exe: error: ld returned 1 exit status`），判定 ASan 不可用，未进行 ASan 验证；按验收规则不阻塞。`.\build.ps1 -Sanitize` 会自动探测并在不可用时回退到 `-Debug` 构建并打印提示。
+- 当前共 **49** 个用例：正例 19、错误例 28、warning 例 2。
 
 ## 已实现
 
@@ -87,13 +72,14 @@ python tests\run_tests.py --exe .\fluid.exe --filter input
 - 函数：签名预扫描、前向引用、参数个数解析期校验、名称冲突检查（参数 / 变量 / 别名）
 - 表达式优先级：`and`/`or`（同级左结合，短路）→ `not`（作用于比较）→ 比较（禁止链式）→ `+ -` → `* /` → 一元 `-` → 基本项
 - 整数 `+ - *` 溢出检查；`/` 恒返回 double 且除零报错；浮点 inf 报错
+- 字符串拼接：`+` 支持 `string + string`（如 `"a" + "b"` = `"ab"`）；`string` 与数值混合（`string + integer` / `integer + string`）报类型不匹配错误；`automatic` 变量当前存字符串时同样适用
 - 浮点转整数须小数部分为 0 且在 int64 范围；字符串与数值比较报错；`string → boolean` 报错
 - `exit N` 层级语义（函数体计 1 层，每个外层 `if`/`repeat` 加 1 层）
 - 浮点格式化：最短可回读表示，整数值补 `.0`
 
-## 未实现（按任务书明确不做）
+## 未实现
 
-REPL、格式化器、LSP、`==`、字符串 `+`、科学计数法、十六进制、`else if`、参数类型标注、链式别名。
+REPL、格式化器、LSP、科学计数法、十六进制、`else if`、参数类型标注、链式别名。
 
 ## 已知限制
 
@@ -103,7 +89,7 @@ REPL、格式化器、LSP、`==`、字符串 `+`、科学计数法、十六进�
 
 ## 语义决策摘要
 
-- 平台：Windows + MinGW g++，仅 C++17；不使用 CMake / MSVC。
+- 平台：Windows，仅 C++17。
 - 浮点转整数：小数部分必须为 0，否则报错（不截断）。
 - 数值溢出：浮点转整数越界、整数 `+ - *` 越界、浮点上溢（inf）均报错。
 - 比较：类型不匹配一律报错；数值可混合（提升 double）；字符串只与字符串；布尔只与布尔。

@@ -1,0 +1,3 @@
+function main
+  initialize string a "a"
+  output a + 1

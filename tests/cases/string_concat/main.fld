@@ -1,0 +1,5 @@
+function main
+  initialize string a "a"
+  initialize string b "b b"
+  reassign a a + b
+  output a
